@@ -1,0 +1,17 @@
+<?xml version="1.0"?>
+
+<robot name="triwheeler" xmlns:xacro="https://www.ros.org/wiki/xacro" >
+
+    <!-- Included URDF Files -->
+    <xacro:include filename="$(find simbot_description)/urdf/triwheeler_base.urdf.xacro" />
+
+    <!-- Instantiate triwheeler_base_macro once (has no parameters atm) -->
+    <xacro:triwheeler_base_macro />
+
+    <!-- RGB-D camera -->
+    <xacro:include filename="$(find simbot_description)/urdf/rgbd_camera.urdf.xacro" />
+    <xacro:rgbd_camera parent="plate">
+        <origin xyz="${6*plate_r/7} 0.0 ${plate_l/2+holder_l/2}" rpy="0 0 0"/>
+    </xacro:rgbd_camera>
+
+</robot>
