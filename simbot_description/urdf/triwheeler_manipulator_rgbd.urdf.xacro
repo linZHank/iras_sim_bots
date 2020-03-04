@@ -16,7 +16,7 @@
 
     <xacro:include filename="$(find simbot_description)/urdf/manipulator.urdf.xacro" />
     <xacro:manipulator parent="chassis">
-        <origin xyz="${2*chassis_x/5} 0.0 ${chassis_z/2+shoulder_l/2}" rpy="0 0 0"/>
+        <origin xyz="${2*chassis_x/5} 0.0 ${chassis_z/2+shoulder_0_l/2}" rpy="0 0 0"/>
     </xacro:manipulator>
 
 </robot>

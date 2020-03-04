@@ -5,74 +5,107 @@
 <robot xmlns:xacro="https://www.ros.org/wiki/xacro">
     <xacro:property name="M_PI" value="3.1415926535897931" />
 
-    <xacro:property name="shoulder_mass" value="2"/>
-    <xacro:property name="shoulder_r" value="0.1"/>
-    <xacro:property name="shoulder_l" value="0.1"/>
+    <xacro:property name="shoulder_0_mass" value="2"/>
+    <xacro:property name="shoulder_0_r" value="0.1"/>
+    <xacro:property name="shoulder_0_l" value="0.1"/>
 
-    <xacro:property name="upper_arm_mass" value="0.4"/>
-    <xacro:property name="upper_arm_r" value="0.05"/>
+    <xacro:property name="shoulder_1_mass" value="0.4"/>
+    <xacro:property name="shoulder_1_r" value="0.05"/>
+    <xacro:property name="shoulder_1_l" value="0.12"/>
+
+    <xacro:property name="upper_arm_mass" value="0.2"/>
+    <xacro:property name="upper_arm_r" value="0.04"/>
     <xacro:property name="upper_arm_l" value="0.4"/>
 
-    <xacro:property name="elbow_mass" value="0.4"/>
-    <xacro:property name="elbow_r" value="0.05"/>
-    <xacro:property name="elbow_l" value="0.2"/>
+    <xacro:property name="elbow_mass" value="0.2"/>
+    <xacro:property name="elbow_r" value="0.02"/>
+    <xacro:property name="elbow_l" value="0.1"/>
 
-    <xacro:property name="lower_arm_mass" value="0.2"/>
-    <xacro:property name="lower_arm_r" value="0.04"/>
-    <xacro:property name="lower_arm_l" value="0.2"/>
+    <xacro:property name="lower_arm_mass" value="0.1"/>
+    <xacro:property name="lower_arm_r" value="0.02"/>
+    <xacro:property name="lower_arm_l" value="0.3"/>
 
     <xacro:property name="wrist_mass" value="0.1"/>
-    <xacro:property name="wrist_r" value="0.02"/>
+    <xacro:property name="wrist_r" value="0.05"/>
     <xacro:property name="wrist_l" value="0.02"/>
 
     <xacro:macro name="manipulator" params="parent name:=manipulator *origin">
-        <joint name="${parent}-${name}_shoulder" type="revolute">
+        <joint name="${parent}-${name}_shoulder_0" type="revolute">
             <xacro:insert_block name="origin" />
             <parent link="${parent}"/>
-            <child link="${name}_shoulder"/>
+            <child link="${name}_shoulder_0"/>
             <limit lower="${-19*M_PI/20}" upper="${19*M_PI/20}" effort="50" velocity="${M_PI}"/>
             <axis xyz="0 0 1"/>
         </joint>
 
-        <link name="${name}_shoulder">
+        <link name="${name}_shoulder_0">
             <visual>
                 <origin rpy="0 0 0" xyz="0 0 0"/>
                 <geometry>
-                    <cylinder length="${shoulder_l}" radius="${shoulder_r}"/>
+                    <cylinder length="${shoulder_0_l}" radius="${shoulder_0_r}"/>
                 </geometry>
                 <material name="orange"/>
             </visual>
             <collision>
                 <origin rpy="0 0 0" xyz="0 0 0" />
                 <geometry>
-                    <cylinder length="${shoulder_l}" radius="${shoulder_r}"/>
+                    <cylinder length="${shoulder_0_l}" radius="${shoulder_0_r}"/>
                 </geometry>
             </collision>
             <inertial>
-				<mass value="${shoulder_mass}" />
+				<mass value="${shoulder_0_mass}" />
 				<origin xyz="0 0 0" />
-				<inertia ixx="${1/12*shoulder_mass*(3*shoulder_r*shoulder_r+shoulder_l*shoulder_l)}" ixy="0" ixz="0" iyy="${1/12*shoulder_mass*(3*shoulder_r*shoulder_r+shoulder_l*shoulder_l)}" iyz="0" izz="${1/2*shoulder_mass*shoulder_r*shoulder_r}"/>
+				<inertia ixx="${1/12*shoulder_0_mass*(3*shoulder_0_r*shoulder_0_r+shoulder_0_l*shoulder_0_l)}" ixy="0" ixz="0" iyy="${1/12*shoulder_0_mass*(3*shoulder_0_r*shoulder_0_r+shoulder_0_l*shoulder_0_l)}" iyz="0" izz="${1/2*shoulder_0_mass*shoulder_0_r*shoulder_0_r}"/>
 			</inertial>
 		</link>
 
-        <joint name="${name}_shoulder-${name}_upper_arm" type="revolute">
-            <origin rpy="0 0 0" xyz="0 0 ${shoulder_l/2}"/>
-            <parent link="${name}_shoulder"/>
+        <joint name="${name}_shoulder_0-${name}_shoulder_1" type="revolute">
+            <origin rpy="${-M_PI/2} 0 0" xyz="0 0 ${shoulder_0_l/2}"/>
+            <parent link="${name}_shoulder_0"/>
+            <child link="${name}_shoulder_1"/>
+            <limit lower="${-7*M_PI/12}" upper="${M_PI/12}" effort="50" velocity="${M_PI}"/>
+            <axis xyz="0 0 1"/>
+        </joint>
+
+        <link name="${name}_shoulder_1">
+            <visual>
+                <origin rpy="0 0 0" xyz="0 0 0"/>
+                <geometry>
+                    <cylinder length="${shoulder_1_l}" radius="${shoulder_1_r}"/>
+                </geometry>
+                <material name="orange"/>
+            </visual>
+            <collision>
+                <origin rpy="0 0 0" xyz="0 0 0" />
+                <geometry>
+                    <cylinder length="${shoulder_1_l}" radius="${shoulder_1_r}"/>
+                </geometry>
+            </collision>
+            <inertial>
+				<mass value="${shoulder_1_mass}" />
+				<origin xyz="0 0 0" />
+				<inertia ixx="${1/12*shoulder_1_mass*(3*shoulder_1_r*shoulder_1_r+shoulder_1_l*shoulder_1_l)}" ixy="0" ixz="0" iyy="${1/12*shoulder_1_mass*(3*shoulder_1_r*shoulder_1_r+shoulder_1_l*shoulder_1_l)}" iyz="0" izz="${1/2*shoulder_1_mass*shoulder_1_r*shoulder_1_r}"/>
+			</inertial>
+		</link>
+
+        <joint name="${name}_shoulder_1-${name}_upper_arm" type="revolute">
+            <origin rpy="0 ${-M_PI/2} 0" xyz="${upper_arm_l/2} 0 0"/>
+            <parent link="${name}_shoulder_1"/>
             <child link="${name}_upper_arm"/>
-            <limit lower="${-M_PI/6}" upper="${7*M_PI/12}" effort="50" velocity="${M_PI}"/>
-            <axis xyz="0 1 0"/>
+            <limit lower="0" upper="0" effort="0" velocity="0"/>
+            <axis xyz="1 0 0"/>
         </joint>
 
         <link name="${name}_upper_arm">
             <visual>
-                <origin rpy="0 0 0" xyz="0 0 ${upper_arm_l/2}"/>
+                <origin rpy="0 0 0" xyz="0 0 0"/>
                 <geometry>
                     <cylinder length="${upper_arm_l}" radius="${upper_arm_r}"/>
                 </geometry>
                 <material name="orange"/>
             </visual>
             <collision>
-                <origin rpy="0 0 0" xyz="0 0 ${upper_arm_l/2}" />
+                <origin rpy="0 0 0" xyz="0 0 0" />
                 <geometry>
                     <cylinder length="${upper_arm_l}" radius="${upper_arm_r}"/>
                 </geometry>
@@ -81,6 +114,93 @@
 				<mass value="${upper_arm_mass}" />
 				<origin xyz="0 0 0" />
 				<inertia ixx="${1/12*upper_arm_mass*(3*upper_arm_r*upper_arm_r+upper_arm_l*upper_arm_l)}" ixy="0" ixz="0" iyy="${1/12*upper_arm_mass*(3*upper_arm_r*upper_arm_r+upper_arm_l*upper_arm_l)}" iyz="0" izz="${1/2*upper_arm_mass*upper_arm_r*upper_arm_r}"/>
+			</inertial>
+		</link>
+
+        <joint name="${name}_upper_arm-${name}_elbow" type="revolute">
+            <origin rpy="0 ${-M_PI/2} 0" xyz="0 0 ${-upper_arm_l/2} "/>
+            <parent link="${name}_upper_arm"/>
+            <child link="${name}_elbow"/>
+            <limit lower="${-3*M_PI/5}" upper="${3*M_PI/5}" effort="50" velocity="${M_PI}"/>
+            <axis xyz="0 0 1"/>
+        </joint>
+
+        <link name="${name}_elbow">
+            <visual>
+                <origin rpy="0 0 0" xyz="0 0 0"/>
+                <geometry>
+                    <cylinder length="${elbow_l}" radius="${elbow_r}"/>
+                </geometry>
+                <material name="orange"/>
+            </visual>
+            <collision>
+                <origin rpy="0 0 0" xyz="0 0 0" />
+                <geometry>
+                    <cylinder length="${elbow_l}" radius="${elbow_r}"/>
+                </geometry>
+            </collision>
+            <inertial>
+				<mass value="${elbow_mass}" />
+				<origin xyz="0 0 0" />
+				<inertia ixx="${1/12*elbow_mass*(3*elbow_r*elbow_r+elbow_l*elbow_l)}" ixy="0" ixz="0" iyy="${1/12*elbow_mass*(3*elbow_r*elbow_r+elbow_l*elbow_l)}" iyz="0" izz="${1/2*elbow_mass*elbow_r*elbow_r}"/>
+			</inertial>
+		</link>
+
+        <joint name="${name}_elbow-${name}_lower_arm" type="revolute">
+            <origin rpy="0 ${-M_PI/2} 0" xyz="${-lower_arm_l/2} 0 0"/>
+            <parent link="${name}_elbow"/>
+            <child link="${name}_lower_arm"/>
+            <limit lower="0" upper="0" effort="0" velocity="0"/>
+            <axis xyz="0 0 1"/>
+        </joint>
+
+        <link name="${name}_lower_arm">
+            <visual>
+                <origin rpy="0 0 0" xyz="0 0 0"/>
+                <geometry>
+                    <cylinder length="${lower_arm_l}" radius="${lower_arm_r}"/>
+                </geometry>
+                <material name="orange"/>
+            </visual>
+            <collision>
+                <origin rpy="0 0 0" xyz="0 0 0" />
+                <geometry>
+                    <cylinder length="${lower_arm_l}" radius="${lower_arm_r}"/>
+                </geometry>
+            </collision>
+            <inertial>
+				<mass value="${lower_arm_mass}" />
+				<origin xyz="0 0 0" />
+				<inertia ixx="${1/12*lower_arm_mass*(3*lower_arm_r*lower_arm_r+lower_arm_l*lower_arm_l)}" ixy="0" ixz="0" iyy="${1/12*lower_arm_mass*(3*lower_arm_r*lower_arm_r+lower_arm_l*lower_arm_l)}" iyz="0" izz="${1/2*lower_arm_mass*lower_arm_r*lower_arm_r}"/>
+			</inertial>
+		</link>
+
+        <joint name="${name}_lower_arm-${name}_wrist" type="revolute">
+            <origin rpy="0 0 0" xyz="0 0 ${lower_arm_l/2+wrist_l/2}"/>
+            <parent link="${name}_lower_arm"/>
+            <child link="${name}_wrist"/>
+            <limit lower="${-19*M_PI/20}" upper="${19*M_PI/20}" effort="50" velocity="${M_PI}"/>
+            <axis xyz="0 0 1"/>
+        </joint>
+
+        <link name="${name}_wrist">
+            <visual>
+                <origin rpy="0 0 0" xyz="0 0 0"/>
+                <geometry>
+                    <cylinder length="${wrist_l}" radius="${wrist_r}"/>
+                </geometry>
+                <material name="orange"/>
+            </visual>
+            <collision>
+                <origin rpy="0 0 0" xyz="0 0 0" />
+                <geometry>
+                    <cylinder length="${wrist_l}" radius="${wrist_r}"/>
+                </geometry>
+            </collision>
+            <inertial>
+				<mass value="${wrist_mass}" />
+				<origin xyz="0 0 0" />
+				<inertia ixx="${1/12*wrist_mass*(3*wrist_r*wrist_r+wrist_l*wrist_l)}" ixy="0" ixz="0" iyy="${1/12*wrist_mass*(3*wrist_r*wrist_r+wrist_l*wrist_l)}" iyz="0" izz="${1/2*wrist_mass*wrist_r*wrist_r}"/>
 			</inertial>
 		</link>
 
