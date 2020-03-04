@@ -14,7 +14,7 @@
     <xacro:property name="shoulder_1_l" value="0.12"/>
 
     <xacro:property name="upper_arm_mass" value="0.2"/>
-    <xacro:property name="upper_arm_r" value="0.04"/>
+    <xacro:property name="upper_arm_r" value="0.03"/>
     <xacro:property name="upper_arm_l" value="0.4"/>
 
     <xacro:property name="elbow_mass" value="0.2"/>
@@ -28,6 +28,16 @@
     <xacro:property name="wrist_mass" value="0.1"/>
     <xacro:property name="wrist_r" value="0.05"/>
     <xacro:property name="wrist_l" value="0.02"/>
+
+    <xacro:property name="gripper_mass" value="0.2"/>
+    <xacro:property name="gripper_x" value="0.14"/>
+    <xacro:property name="gripper_y" value="0.07"/>
+    <xacro:property name="gripper_z" value="0.04"/>
+
+    <xacro:property name="finger_mass" value="0.02"/>
+    <xacro:property name="finger_x" value="0.02"/>
+    <xacro:property name="finger_y" value="0.07"/>
+    <xacro:property name="finger_z" value="0.07"/>
 
     <xacro:macro name="manipulator" params="parent name:=manipulator *origin">
         <joint name="${parent}-${name}_shoulder_0" type="revolute">
@@ -102,7 +112,7 @@
                 <geometry>
                     <cylinder length="${upper_arm_l}" radius="${upper_arm_r}"/>
                 </geometry>
-                <material name="orange"/>
+                <material name="grey"/>
             </visual>
             <collision>
                 <origin rpy="0 0 0" xyz="0 0 0" />
@@ -160,7 +170,7 @@
                 <geometry>
                     <cylinder length="${lower_arm_l}" radius="${lower_arm_r}"/>
                 </geometry>
-                <material name="orange"/>
+                <material name="grey"/>
             </visual>
             <collision>
                 <origin rpy="0 0 0" xyz="0 0 0" />
@@ -204,81 +214,93 @@
 			</inertial>
 		</link>
 
-        <!-- <joint name="camera_holder-camera_body" type="revolute">
-            <origin rpy="0 0 0" xyz="0 0 ${holder_l/2+camera_height/2}"/>
-            <parent link="camera_holder"/>
-            <child link="camera_body"/>
-            <limit lower="${-M_PI/6}" upper="${M_PI/12}" effort="50" velocity="${M_PI}"/>
-            <axis xyz="0 1 0"/>
+        <joint name="${name}_wrist-${name}_gripper" type="revolute">
+            <origin rpy="0 0 0" xyz="0 0 ${wrist_l/2+gripper_z/2}"/>
+            <parent link="${name}_wrist"/>
+            <child link="${name}_gripper"/>
+            <limit lower="0" upper="0" effort="0" velocity="0"/>
+            <axis xyz="0 0 1"/>
         </joint>
 
-        <link name="camera_body">
-			<visual>
-				<origin xyz="0 0 0" rpy="0 0 0" />
-				<geometry>
-					<box size="${camera_depth} ${camera_width} ${camera_height}" />
-				</geometry>
-                <color rgba="0.5 0.5 0.5 1"/>
-			</visual>
-			<collision>
-				<origin xyz="0 0 0" rpy="0 0 0" />
-				<geometry>
-                    <box size="${camera_depth} ${camera_width} ${camera_height}" />
-				</geometry>
-			</collision>
+        <link name="${name}_gripper">
+            <visual>
+                <origin xyz="0 0 0" rpy="0 0 0" />
+                <geometry>
+                    <box size="${gripper_x} ${gripper_y} ${gripper_z}"/> />
+                </geometry>
+                <material name="grey"/>
+            </visual>
+            <collision>
+                <origin xyz="0 0 0" rpy="0 0 0" />
+                <geometry>
+                    <box size="${gripper_x} ${gripper_y} ${gripper_z}"/> />
+                </geometry>
+            </collision>
             <inertial>
-				<mass value="${camera_mass}" />
+				<mass value="${gripper_mass}" />
 				<origin xyz="0 0 0" />
-				<inertia ixx="5.8083e-4" ixy="0" ixz="0" iyy="3.0833e-5" iyz="0" izz="5.9083e-4" />
-			</inertial>
+                <inertia ixx="${1/12*gripper_mass*(gripper_y*gripper_y+gripper_z*gripper_z)}" ixy="0" ixz="0" iyy="${1/12*gripper_mass*(gripper_z*gripper_z+gripper_x*gripper_x)}" iyz="0" izz="${1/12*gripper_mass*(gripper_x*gripper_x+gripper_y*gripper_y)}"/>
+            </inertial>
 		</link>
 
-        <joint name="camera_body-depth_frame" type="fixed">
-            <origin xyz="${camera_depth/2} 0.0175 0.0" rpy="${-M_PI/2} 0 ${-M_PI/2}" />
-            <parent link="camera_body" />
-            <child link="camera_depth_frame"/>
+        <joint name="${name}_gripper-${name}_left_finger" type="prismatic">
+            <origin rpy="0 0 0" xyz="${-gripper_x/2+finger_x/2} 0 ${gripper_z/2+finger_z/2}"/>
+            <parent link="${name}_gripper"/>
+            <child link="${name}_left_finger"/>
+            <limit lower="0" upper="${gripper_x/2-finger_x}" effort="70" velocity="2"/>
+            <axis xyz="1 0 0"/>
         </joint>
 
-        <link name="camera_depth_frame"/>
+        <link name="${name}_left_finger">
+            <visual>
+                <origin xyz="0 0 0" rpy="0 0 0" />
+                <geometry>
+                    <box size="${finger_x} ${finger_y} ${finger_z}"/> />
+                </geometry>
+                <material name="white"/>
+            </visual>
+            <collision>
+                <origin xyz="0 0 0" rpy="0 0 0" />
+                <geometry>
+                    <box size="${finger_x} ${finger_y} ${finger_z}"/> />
+                </geometry>
+            </collision>
+            <inertial>
+				<mass value="${finger_mass}" />
+				<origin xyz="0 0 0" />
+                <inertia ixx="${1/12*finger_mass*(finger_y*finger_y+finger_z*finger_z)}" ixy="0" ixz="0" iyy="${1/12*finger_mass*(finger_z*finger_z+finger_x*finger_x)}" iyz="0" izz="${1/12*finger_mass*(finger_x*finger_x+finger_y*finger_y)}"/>
+            </inertial>
+		</link>
 
-        <joint name="camera_body-depth_optical" type="fixed">
-            <origin xyz="${camera_depth/2} 0.0175 0" rpy="0 0 0" />
-            <parent link="camera_body" />
-            <child link="camera_depth_optical"/>
+        <joint name="${name}_gripper-${name}_right_finger" type="prismatic">
+            <origin rpy="0 0 0" xyz="${gripper_x/2-finger_x/2} 0 ${gripper_z/2+finger_z/2}"/>
+            <parent link="${name}_gripper"/>
+            <child link="${name}_right_finger"/>
+            <limit lower="${-gripper_x/2+finger_x}" upper="0" effort="70" velocity="2"/>
+            <axis xyz="1 0 0"/>
         </joint>
 
-        <link name="camera_depth_optical"/>
+        <link name="${name}_right_finger">
+            <visual>
+                <origin xyz="0 0 0" rpy="0 0 0" />
+                <geometry>
+                    <box size="${finger_x} ${finger_y} ${finger_z}"/> />
+                </geometry>
+                <material name="white"/>
+            </visual>
+            <collision>
+                <origin xyz="0 0 0" rpy="0 0 0" />
+                <geometry>
+                    <box size="${finger_x} ${finger_y} ${finger_z}"/> />
+                </geometry>
+            </collision>
+            <inertial>
+				<mass value="${finger_mass}" />
+				<origin xyz="0 0 0" />
+                <inertia ixx="${1/12*finger_mass*(finger_y*finger_y+finger_z*finger_z)}" ixy="0" ixz="0" iyy="${1/12*finger_mass*(finger_z*finger_z+finger_x*finger_x)}" iyz="0" izz="${1/12*finger_mass*(finger_x*finger_x+finger_y*finger_y)}"/>
+            </inertial>
+		</link>
 
-    </xacro:macro>
-
-
-    <xacro:macro name="rgbd_camera_gazebo_plugin_macro" params="link_name camera_name:=camera frame_name">
-        <gazebo reference="${link_name}">
-            <sensor type="depth" name="${link_name}_camera">
-                <update_rate>30</update_rate>
-                <camera>
-                    <horizontal_fov>${69.4 * M_PI/180.0}</horizontal_fov>
-                    <image>
-                        <format>B8G8R8</format>
-                        <width>640</width>
-                        <height>480</height>
-                    </image>
-                    <clip>
-                        <near>0.3</near>
-                        <far>10</far>
-                    </clip>
-                </camera>
-                <plugin name="${link_name}_controller" filename="libgazebo_ros_openni_kinect.so">
-                    <cameraName>${camera_name}</cameraName>
-                    <imageTopicName>/${camera_name}/color/image_raw</imageTopicName>
-                    <cameraInfoTopicName>/${camera_name}/color/camera_info</cameraInfoTopicName>
-                    <depthImageTopicName>/${camera_name}/depth/image_raw</depthImageTopicName>
-                    <depthImageInfoTopicName>/${camera_name}/depth/camera_info</depthImageInfoTopicName>
-                    <pointCloudTopicName>/${camera_name}/depth/points</pointCloudTopicName>
-                    <frameName>${frame_name}</frameName>
-                </plugin>
-            </sensor>
-        </gazebo> -->
     </xacro:macro>
 
 </robot>
