@@ -98,7 +98,66 @@ Visualization Manager:
           Alpha: 1
           Show Axes: false
           Show Trail: false
+        imu:
+          Alpha: 1
+          Show Axes: false
+          Show Trail: false
+        laser_body:
+          Alpha: 1
+          Show Axes: false
+          Show Trail: false
+          Value: true
+        laser_stand:
+          Alpha: 1
+          Show Axes: false
+          Show Trail: false
+          Value: true
         left_wheel:
+          Alpha: 1
+          Show Axes: false
+          Show Trail: false
+          Value: true
+        manipulator_elbow:
+          Alpha: 1
+          Show Axes: false
+          Show Trail: false
+          Value: true
+        manipulator_gripper:
+          Alpha: 1
+          Show Axes: false
+          Show Trail: false
+          Value: true
+        manipulator_left_finger:
+          Alpha: 1
+          Show Axes: false
+          Show Trail: false
+          Value: true
+        manipulator_lower_arm:
+          Alpha: 1
+          Show Axes: false
+          Show Trail: false
+          Value: true
+        manipulator_right_finger:
+          Alpha: 1
+          Show Axes: false
+          Show Trail: false
+          Value: true
+        manipulator_shoulder_0:
+          Alpha: 1
+          Show Axes: false
+          Show Trail: false
+          Value: true
+        manipulator_shoulder_1:
+          Alpha: 1
+          Show Axes: false
+          Show Trail: false
+          Value: true
+        manipulator_upper_arm:
+          Alpha: 1
+          Show Axes: false
+          Show Trail: false
+          Value: true
+        manipulator_wrist:
           Alpha: 1
           Show Axes: false
           Show Trail: false
@@ -143,7 +202,31 @@ Visualization Manager:
           Value: false
         chassis_inertial:
           Value: false
+        imu:
+          Value: true
+        laser_body:
+          Value: true
+        laser_stand:
+          Value: false
         left_wheel:
+          Value: false
+        manipulator_elbow:
+          Value: false
+        manipulator_gripper:
+          Value: true
+        manipulator_left_finger:
+          Value: false
+        manipulator_lower_arm:
+          Value: false
+        manipulator_right_finger:
+          Value: false
+        manipulator_shoulder_0:
+          Value: true
+        manipulator_shoulder_1:
+          Value: false
+        manipulator_upper_arm:
+          Value: false
+        manipulator_wrist:
           Value: false
         plate:
           Value: false
@@ -162,8 +245,21 @@ Visualization Manager:
             {}
           chassis_inertial:
             {}
+          imu:
+            {}
           left_wheel:
             {}
+          manipulator_shoulder_0:
+            manipulator_shoulder_1:
+              manipulator_upper_arm:
+                manipulator_elbow:
+                  manipulator_lower_arm:
+                    manipulator_wrist:
+                      manipulator_gripper:
+                        manipulator_left_finger:
+                          {}
+                        manipulator_right_finger:
+                          {}
           right_wheel:
             {}
           support:
@@ -174,6 +270,9 @@ Visualization Manager:
                     {}
                   camera_depth_optical:
                     {}
+              laser_stand:
+                laser_body:
+                  {}
       Update Interval: 0
       Value: true
     - Class: rviz/Axes
@@ -226,10 +325,10 @@ Visualization Manager:
       Invert Z Axis: false
       Name: Current View
       Near Clip Distance: 0.009999999776482582
-      Pitch: 0.5853983759880066
+      Pitch: 0.48539847135543823
       Target Frame: <Fixed Frame>
       Value: Orbit (rviz)
-      Yaw: 0.7454193830490112
+      Yaw: 1.4504187107086182
     Saved: ~
 Window Geometry:
   Displays:
@@ -248,4 +347,4 @@ Window Geometry:
     collapsed: false
   Width: 1676
   X: 742
-  Y: 196
+  Y: 166
