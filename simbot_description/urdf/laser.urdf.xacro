@@ -1,0 +1,111 @@
+<?xml version="1.0"?>
+
+
+
+<robot xmlns:xacro="https://www.ros.org/wiki/xacro">
+    <xacro:property name="M_PI" value="3.1415926535897931" />
+
+    <xacro:property name="stand_mass" value="0.05"/>
+    <xacro:property name="stand_r" value="0.02"/>
+    <xacro:property name="stand_l" value="0.14"/>
+
+    <xacro:property name="laser_width" value="0.1"/>
+    <xacro:property name="laser_height" value="0.1"/>
+    <xacro:property name="laser_depth" value="0.1"/>
+    <xacro:property name="laser_mass" value="0.01"/>
+
+    <xacro:macro name="laser" params="parent name:=laser *origin">
+        <joint name="${parent}-{name}_stand" type="revolute">
+            <xacro:insert_block name="origin" />
+            <parent link="${parent}"/>
+            <child link="${name}_stand"/>
+            <limit lower="0" upper="0" effort="0" velocity="0"/>
+            <axis xyz="0 0 1"/>
+        </joint>
+
+        <link name="${name}_stand">
+            <visual>
+                <origin rpy="0 0 0" xyz="0 0 0"/>
+                <geometry>
+                    <cylinder length="${stand_l}" radius="${stand_r}"/>
+                </geometry>
+                <material name="grey"/>
+            </visual>
+            <collision>
+                <origin rpy="0 0 0" xyz="0 0 0" />
+                <geometry>
+                    <cylinder length="${stand_l}" radius="${stand_r}"/>
+                </geometry>
+            </collision>
+            <inertial>
+				<mass value="${stand_mass}" />
+				<origin xyz="0 0 0" />
+				<inertia ixx="${1/12*stand_mass*(3*stand_r*stand_r+stand_l*stand_l)}" ixy="0" ixz="0" iyy="${1/12*stand_mass*(3*stand_r*stand_r+stand_l*stand_l)}" iyz="0" izz="${1/2*stand_mass*stand_r*stand_r}"/>
+			</inertial>
+		</link>
+
+        <joint name="${name}_stand-${name}_body" type="revolute">
+            <origin rpy="0 0 0" xyz="0 0 ${stand_l/2+laser_height/2}"/>
+            <parent link="${name}_stand"/>
+            <child link="${name}_body"/>
+            <limit lower="0" upper="0" effort="0" velocity="0"/>
+            <axis xyz="0 0 1"/>
+        </joint>
+
+        <link name="${name}_body">
+			<visual>
+				<origin xyz="0 0 0" rpy="0 0 0" />
+				<geometry>
+					<box size="${laser_depth} ${laser_width} ${laser_height}" />
+				</geometry>
+                <color rgba="0.5 0.5 0.5 1"/>
+			</visual>
+			<collision>
+				<origin xyz="0 0 0" rpy="0 0 0" />
+				<geometry>
+                    <box size="${laser_depth} ${laser_width} ${laser_height}" />
+				</geometry>
+			</collision>
+            <inertial>
+				<mass value="${laser_mass}" />
+				<origin xyz="0 0 0" />
+				<inertia ixx="${1/12*laser_mass*(laser_width*laser_width+laser_height*laser_height)}" ixy="0" ixz="0" iyy="${1/12*laser_mass*(laser_height*laser_height+laser_depth*laser_depth)}" iyz="0" izz="${1/12*laser_mass*(laser_depth*laser_depth+laser_width*laser_width)}"/>
+			</inertial>
+		</link>
+    </xacro:macro>
+
+    <xacro:macro name="rgbd_camera_gazebo_plugin_macro" params="link_name">
+        <gazebo reference="${link_name}">
+            <sensor type="gpu_ray" name="laser_range_sensor">
+                <pose>0 0 0 0 0 0</pose>
+                <visualize>false</visualize>
+                <update_rate>40</update_rate>
+                <ray>
+                    <scan>
+                        <horizontal>
+                            <samples>720</samples>
+                            <resolution>1</resolution>
+                            <min_angle>-1.570796</min_angle>
+                            <max_angle>1.570796</max_angle>
+                        </horizontal>
+                    </scan>
+                    <range>
+                        <min>0.10</min>
+                        <max>30.0</max>
+                        <resolution>0.01</resolution>
+                    </range>
+                    <noise>
+                        <type>gaussian</type>
+                        <mean>0.0</mean>
+                        <stddev>0.01</stddev>
+                    </noise>
+                </ray>
+                <plugin name="gazebo_ros_head_hokuyo_controller" filename="libgazebo_ros_gpu_laser.so">
+                    <topicName>/${link_name}/laser/scan</topicName>
+                    <frameName>${link_name}</frameName>
+                </plugin>
+            </sensor>
+        </gazebo>
+    </xacro:macro>
+
+</robot>

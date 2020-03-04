@@ -38,9 +38,9 @@
                 </geometry>
             </collision>
             <inertial>
-				<mass value="${camera_mass}" />
+				<mass value="${holder_mass}" />
 				<origin xyz="0 0 0" />
-				<inertia ixx="${1/12*camera_mass*(3*holder_r*holder_r+holder_l*holder_l)}" ixy="0" ixz="0" iyy="${1/12*holder_mass*(3*holder_r*holder_r+holder_l*holder_l)}" iyz="0" izz="${1/2*holder_mass*holder_r*holder_r}"/>
+				<inertia ixx="${1/12*holder_mass*(3*holder_r*holder_r+holder_l*holder_l)}" ixy="0" ixz="0" iyy="${1/12*holder_mass*(3*holder_r*holder_r+holder_l*holder_l)}" iyz="0" izz="${1/2*holder_mass*holder_r*holder_r}"/>
 			</inertial>
 		</link>
 
