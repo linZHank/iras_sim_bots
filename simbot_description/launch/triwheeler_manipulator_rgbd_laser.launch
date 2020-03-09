@@ -1,8 +1,6 @@
 <launch>
 
-    <arg name="robot_namespace" default="/"/>
-
-    <param name="robot_description" command="$(find xacro)/xacro '$(find simbot_description)/urdf/triwheeler_manipulator_rgbd_laser.urdf.xacro' robot_namespace:=$(arg robot_namespace)" />
+    <param name="robot_description" command="$(find xacro)/xacro '$(find simbot_description)/urdf/triwheeler_manipulator_rgbd_laser.urdf.xacro'" />
 
     <!-- send fake joint values -->
     <node name="joint_state_publisher" pkg="joint_state_publisher_gui" type="joint_state_publisher_gui"/>

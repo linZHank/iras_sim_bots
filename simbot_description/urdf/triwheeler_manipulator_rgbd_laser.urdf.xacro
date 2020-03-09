@@ -7,6 +7,12 @@
 
     <!-- Instantiate triwheeler_base_macro once (has no parameters atm) -->
     <xacro:triwheeler_base_macro />
+    <gazebo>
+        <plugin name="gazebo_ros_control" filename="libgazebo_ros_control.so">
+            <robotNamespace>/triwheeler</robotNamespace>
+            <robotSimType>gazebo_ros_control/DefaultRobotHWSim</robotSimType>
+        </plugin>
+    </gazebo>
 
 
     <!-- manipulator -->

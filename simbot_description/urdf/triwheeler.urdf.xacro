@@ -51,6 +51,12 @@
                 </geometry>
             </collision>
         </link>
+        <gazebo reference="chassis">
+            <mu1>0.2</mu1>
+            <mu2>0.2</mu2>
+            <material>Gazebo/Black</material>
+        </gazebo>
+
         <!-- kdl does not support a root link with an inertia, create a dummy link only contains inertia of base_link -->
         <joint name="chassis-chassis_inertial" type="fixed">
             <origin xyz="0 0 0" rpy="0 0 0" />
@@ -93,6 +99,11 @@
                 <inertia ixx="${1/12*wheel_m*(3*wheel_r*wheel_r+wheel_l*wheel_l)}" ixy="0" ixz="0" iyy="${1/12*wheel_m*(3*wheel_r*wheel_r+wheel_l*wheel_l)}" iyz="0" izz="${1/2*wheel_m*wheel_r*wheel_r}"/>
             </inertial>
         </link>
+        <gazebo reference="left_wheel">
+            <mu1>0.99</mu1>
+            <mu2>0.99</mu2>
+            <material>Gazebo/Wood</material>
+        </gazebo>
 
         <!-- right wheel -->
         <joint name="$chassis-right_wheel" type="continuous">
@@ -122,6 +133,12 @@
                 <inertia ixx="${1/12*wheel_m*(3*wheel_r*wheel_r+wheel_l*wheel_l)}" ixy="0" ixz="0" iyy="${1/12*wheel_m*(3*wheel_r*wheel_r+wheel_l*wheel_l)}" iyz="0" izz="${1/2*wheel_m*wheel_r*wheel_r}"/>
             </inertial>
         </link>
+        <gazebo reference="right_wheel">
+            <mu1>0.99</mu1>
+            <mu2>0.99</mu2>
+            <material>Gazebo/Wood</material>
+        </gazebo>
+
 
         <!-- caster ball -->
         <joint name="joint_chassis_caster" type="fixed">
@@ -150,6 +167,11 @@
                 <inertia ixx="${2/5*caster_m*caster_r*caster_r}" ixy="0" ixz="0" iyy="${2/5*caster_m*caster_r*caster_r}" iyz="0" izz="${2/5*caster_m*caster_r*caster_r}"/>
             </inertial>
         </link>
+        <gazebo reference="caster">
+            <mu1>0.0</mu1>
+            <mu2>0.0</mu2>
+            <material>Gazebo/Grey</material>
+        </gazebo>
 
         <joint name="chassis-support" type="fixed">
             <origin rpy="0 0 0" xyz="-${wheelbase/4} 0 ${chassis_z/2+support_l/2}"/>
@@ -177,6 +199,11 @@
                 <inertia ixx="${1/12*support_m*(3*support_r*support_r+support_l*support_l)}" ixy="0" ixz="0" iyy="${1/12*support_m*(3*support_r*support_r+support_l*support_l)}" iyz="0" izz="${1/2*support_m*support_r*support_r}"/>
             </inertial>
         </link>
+        <gazebo reference="support">
+            <mu1>0.2</mu1>
+            <mu2>0.2</mu2>
+            <material>Gazebo/Grey</material>
+        </gazebo>
 
         <joint name="support-plate" type="revolute">
             <origin rpy="0 0 0" xyz="0 0 ${support_l/2+plate_l/2}"/>
@@ -206,6 +233,12 @@
                 <inertia ixx="${1/12*plate_m*(3*plate_r*plate_r+plate_l*plate_l)}" ixy="0" ixz="0" iyy="${1/12*plate_m*(3*plate_r*plate_r+plate_l*plate_l)}" iyz="0" izz="${1/2*plate_m*plate_r*plate_r}"/>
             </inertial>
         </link>
+        <gazebo reference="plate">
+            <mu1>0.77</mu1>
+            <mu2>0.77</mu2>
+            <material>Gazebo/CoM</material>
+        </gazebo>
+
 
         <joint name="chassis-imu" type="revolute">
             <origin rpy="0 0 0" xyz="${chassis_x/4} 0 ${chassis_z/2}"/>
